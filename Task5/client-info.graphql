@@ -1,0 +1,124 @@
+# GraphQL Schema для сервиса client-info
+# Эквивалент REST API с возможностью гибкого выбора запрашиваемых данных
+
+# Тип: Клиент
+type Client {
+  # Идентификатор клиента
+  id: ID!
+  
+  # Имя клиента
+  name: String!
+  
+  # Возраст клиента
+  age: Int!
+  
+  # Документы клиента (связь один-ко-многим)
+  documents: [Document!]!
+  
+  # Родственники клиента (связь один-ко-многим)
+  relatives: [Relative!]!
+}
+
+# Тип: Документ
+type Document {
+  # Идентификатор документа
+  id: ID!
+  
+  # Тип документа (паспорт, водительское удостоверение и т.д.)
+  type: String!
+  
+  # Номер документа
+  number: String!
+  
+  # Дата выдачи документа (формат ISO 8601)
+  issueDate: String!
+  
+  # Дата окончания действия документа (формат ISO 8601)
+  expiryDate: String
+}
+
+# Тип: Родственник
+type Relative {
+  # Идентификатор родственника
+  id: ID!
+  
+  # Тип родства (супруг, ребенок, родитель и т.д.)
+  relationType: String!
+  
+  # Имя родственника
+  name: String!
+  
+  # Возраст родственника
+  age: Int!
+}
+
+# Корневой тип для запросов
+type Query {
+  # Получить информацию о клиенте по ID
+  # 
+  # Пример запроса:
+  # {
+  #   client(id: "123") {
+  #     id
+  #     name
+  #     age
+  #     documents {
+  #       type
+  #       number
+  #       expiryDate
+  #     }
+  #     relatives {
+  #       relationType
+  #       name
+  #     }
+  #   }
+  # }
+  client(id: ID!): Client
+  
+  # Получить список всех клиентов
+  # Полезно для административных задач или поиска
+  clients: [Client!]!
+}
+
+# Корневой тип для мутаций (на будущее, если потребуется создание/обновление данных)
+type Mutation {
+  # Создать нового клиента
+  createClient(input: CreateClientInput!): Client!
+  
+  # Обновить данные клиента
+  updateClient(id: ID!, input: UpdateClientInput!): Client!
+  
+  # Добавить документ клиенту
+  addDocument(clientId: ID!, input: CreateDocumentInput!): Document!
+  
+  # Добавить родственника клиенту
+  addRelative(clientId: ID!, input: CreateRelativeInput!): Relative!
+}
+
+# Входные данные для создания клиента
+input CreateClientInput {
+  name: String!
+  age: Int!
+}
+
+# Входные данные для обновления клиента
+input UpdateClientInput {
+  name: String
+  age: Int
+}
+
+# Входные данные для создания документа
+input CreateDocumentInput {
+  type: String!
+  number: String!
+  issueDate: String!
+  expiryDate: String
+}
+
+# Входные данные для создания родственника
+input CreateRelativeInput {
+  relationType: String!
+  name: String!
+  age: Int!
+}
+

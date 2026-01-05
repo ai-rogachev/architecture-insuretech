@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scale-app
+spec:
+  selector:
+    matchLabels:
+      app: scale-app
+  template:
+    metadata:
+      labels:
+        app: scale-app
+    spec:
+      containers:
+      - name: scale-app
+        image: ghcr.io/yandex-practicum/scaletestapp:latest
+        resources:
+          requests:
+            cpu: 5m
+            memory: "5Mi"  # Уменьшено для более чувствительного масштабирования
+        ports:
+        - containerPort: 8080
